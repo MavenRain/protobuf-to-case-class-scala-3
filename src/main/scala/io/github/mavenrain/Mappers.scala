@@ -17,12 +17,12 @@ import com.hubspot.jackson.datatype.protobuf.ProtobufModule
 import scala.deriving.Mirror.Of
 import scala.util.chaining.scalaUtilChainingOps
 
-def mapToDomain[S <: GeneratedMessageV3, T](request: S, reference: Class[T])(using evidence: Of[T]): T =
+def mapToDomain[S <: GeneratedMessageV3, T](request: S, reference: Class[T])(using Of[T]): T =
   request
     .pipe(contractMapper.writeValueAsString(_))
     .pipe(domainMapper.readValue(_, reference))
 
-def mapToContract[S, T <: GeneratedMessageV3](request: S, reference: Class[T])(using evidence: Of[S]): T =
+def mapToContract[S, T <: GeneratedMessageV3](request: S, reference: Class[T])(using Of[S]): T =
     request
       .pipe(domainMapper.writeValueAsString(_))
       .pipe(contractMapper.readValue(_, reference))
