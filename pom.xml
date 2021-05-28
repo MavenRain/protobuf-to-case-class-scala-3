@@ -31,10 +31,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Versions -->
+        <exec.maven.version>3.0.0</exec.maven.version>
         <grpc.version>1.37.0</grpc.version>
         <jackson.databind.version>2.12.3</jackson.databind.version>
         <jackson.protobuf.version>0.9.12</jackson.protobuf.version>
-        <maven.jar.plugin.version>3.1.2</maven.jar.plugin.version>
+        <maven.jar.plugin.version>3.2.0</maven.jar.plugin.version>
         <scala.version>2.12.10</scala.version>
         <scala.version.major>3</scala.version.major>
         <scala.version.minor>0</scala.version.minor>
@@ -101,6 +102,9 @@
                 <artifactId>scala-maven-plugin</artifactId>
                 <version>${scala.maven.plugin.version}</version>
                 <configuration>
+                    <archive>
+                        <manifest><mainClass>Main$package</mainClass></manifest>
+                    </archive>
                     <scalaVersion>${scala.version.major}.${scala.version.minor}.${scala.version.patch}</scalaVersion>
                 </configuration>
                 <executions>
@@ -127,6 +131,7 @@
                 <version>${maven.jar.plugin.version}</version>
                 <configuration>
                     <archive>
+                        <manifest><mainClass>Main$package</mainClass></manifest>
                         <manifestEntries>
                             <hyperdriveVersion>${hyperdrive.version}</hyperdriveVersion>
                         </manifestEntries>
@@ -139,7 +144,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M3</version>
                 <configuration>
-                    <skipTests>true</skipTests>
+                    <skipTests>false</skipTests>
                 </configuration>
             </plugin>
             <plugin>
@@ -156,6 +161,40 @@
                         <id>unit-tests</id>
                         <goals>
                             <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec.maven.version}</version>
+                <configuration>
+                    <mainClass>Main$package</mainClass>
+                    <arguments>
+                        <argument></argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>Main$package</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
                         </goals>
                     </execution>
                 </executions>
